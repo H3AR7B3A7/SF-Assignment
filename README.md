@@ -1,4 +1,7 @@
 # Pseudo Code Assignment
+The handout can be found [here](https://github.com/H3AR7B3A7/SF-Assignment/blob/master/assignment-handout.pdf).  
+
+### Preface
 To keep it simple we will take a look at a *single thread solution*. 
 Then we will try to see what can be done to optimize the execution using multiple threads.
 For brevity, we will just list some possibilities.
@@ -49,10 +52,21 @@ Given a growing list of mails (listOfMails):
 
 ## Multiple threads
 Things we could try to optimize:
-- Use **parallelStream** instead
+- Use a **parallelStream** instead
   - List of mails has to be big enough to improve execution speed
 - Have **different threads each take a list**, then filter for containing a string before FOREACH
   - Some lists could be made to have more / less importance
-  
+
+## Questions for 'Park Shark'
+- Where does the list of mails come from?
+- What is the average amount of mails received in the mailbox?
+- What are the preferences regarding the interval to check the mailbox?
+  - What should be the frequency?
+  - Should it be changeable?
+- Where will this program be running?
+  - Should this program have an own interface? 
+  - Or will it be integrated and run with command line arguments?
+- ...
+
 ---
 <div align="right">-- Steven D'Hondt</div>
