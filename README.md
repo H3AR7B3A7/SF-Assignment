@@ -54,6 +54,7 @@ Given a growing list of mails (listOfMails):
 Things we could try to optimize:
 - Use a **parallelStream** instead
   - List of mails has to be big enough to improve execution speed
+- Introduce a **thread pool** and pass what comes after FOREACH to executors
 - Have **different threads each take a list**, then filter for containing a string before FOREACH
   - Some lists could be made to have more / less importance
 
