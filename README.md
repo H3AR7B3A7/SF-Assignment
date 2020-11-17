@@ -45,6 +45,7 @@ Given a growing list of mails (listOfMails):
                             delete mail (*)
             else
                 liveSorting = false     // Stop program when there are no more new mails
+                // Execute some extra code before shut down
         print # of mails
         sleep (intervalInMin toMillis)
         
@@ -58,7 +59,9 @@ Given a growing list of mails (listOfMails):
     print # of mails
         total = recruitment + spam + sales + reception
         print: total, recruitment, spam, sales, reception
-        // can print to csv file to save data and do more calc by adding collumn
+        // Can print to csv file to save data 
+        // This csv can be consumed by some other code and do more calc by adding collumns
+        // For example (current - previous) for data on 1 loop
 
 ## Multiple threads
 Things we could try to optimize:
