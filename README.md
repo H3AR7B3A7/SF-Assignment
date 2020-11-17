@@ -1,5 +1,6 @@
 # Pseudo Code Assignment
 The handout can be found [here](https://github.com/H3AR7B3A7/SF-Assignment/blob/master/assignment-handout.pdf).  
+There were two assignment extensions as well: [1](https://github.com/H3AR7B3A7/SF-Assignment/blob/master/extension-1-handout.pdf) and [2](https://github.com/H3AR7B3A7/SF-Assignment/blob/master/extension-2-handout.pdf).
 
 ### Preface
 To keep it simple we will take a look at a *single thread solution*. 
@@ -10,7 +11,10 @@ For brevity, we will just list some possibilities.
 Given a growing list of mails (listOfMails):
 
     // To prevent data loss on power outage or shut downs,
-    // we can fetch these from 'csv' (or any table/file you write to)
+    // we can fetch these from 'csv' (or any table/file we write to)
+    // before the 'infinite' loop is started. 
+    // (A reset could be asked through one of the args as a boolean.)
+    
     recruitment = 0
     spam = 0
     sales = 0
@@ -19,13 +23,23 @@ Given a growing list of mails (listOfMails):
     spamReferenceList = null
     duplicate = 0
     
-    intervalInMin = INPUT("Interval in minutes?")
+    get arg0 (reset): [default false]
+    if arg0 = false
+        recruitment = Read from CSV/file
+        spam = Read from CSV/file
+        sales = Read from CSV/file
+        reception = Read from CSV/file
+        duplicate = Read from CSV/file
+        
+    get arg1 (interval): [default 10]
+        intervalInMin = INPUT("Interval in minutes?")
     
     WHILE liveSorting
         get listOfMails
         listOfMails -> stream
             if listOfMails != null
                 FOREACH mail of listOfMails
+                    // Using Apache commons string utils 'containsIgnorCase
                     IF contains "CV" (~ title / body / attachment ???)
                         forward to "recruitment@parkshark.com"
                         recruitment++
@@ -47,15 +61,17 @@ Given a growing list of mails (listOfMails):
                         else 
                             forward to "jobstudent@parkshark.com"
                             reception++
-                    delete mail (* in info mailbox)
+                    delete mail (* in info@parkshark mailbox)
             else
-                liveSorting = false     // Stop program when there are no more new mails
+                liveSorting = false     // To stop program when there are no more new mails,
+                                        // but having the program sleep for some time would make
+                                        // more sense. This way it doesn't need to be restarted.
                 // Execute some extra code before shut down
         print # of mails
         sleep (intervalInMin toMillis)
         
     getListOfMails
-        listOfMails = (List) GET someApi
+        listOfMails = (List) GET someApi // The single most simplified line in this writing
         return listOfMails
         
     deleteMail
@@ -67,6 +83,7 @@ Given a growing list of mails (listOfMails):
         // Can print to csv file to save data 
         // This csv can be consumed by some other code and do more calc by adding collumns
         // For example (current - previous) for data on 1 loop
+        
     print # of mails including duplicates
         total = recruitment + spam + sales + reception + duplicates
         print: total, recruitment, spam + duplicates, sales, reception
@@ -77,10 +94,11 @@ Things we could try to optimize:
   - List of mails has to be big enough to improve execution speed
 - Introduce a **thread pool** and pass what comes after FOREACH to executors
 - Have **different threads each take a list**, then filter for containing a string before FOREACH
+  - There would be no future issues around the order in which the checks happen
   - Some lists could be made to have more / less importance
 
 ## Questions for 'Park Shark'
-- Where does the list of mails come from?
+- Where does the list of mails come from? (We only have the address so far.)
 - What is the average amount of mails received in the mailbox?
 - What are the preferences regarding the interval to check the mailbox?
   - What should be the frequency?
