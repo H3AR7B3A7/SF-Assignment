@@ -9,10 +9,15 @@ For brevity, we will just list some possibilities.
 ## Single thread
 Given a growing list of mails (listOfMails):
 
+    // To prevent data loss on power outage or shut downs,
+    // we can fetch these from 'csv' (or any table/file you write to)
     recruitment = 0
     spam = 0
     sales = 0
     reception = 0
+    
+    spamReferenceList = null
+    duplicate = 0
     
     intervalInMin = INPUT("Interval in minutes?")
     
@@ -24,25 +29,25 @@ Given a growing list of mails (listOfMails):
                     IF contains "CV" (~ title / body / attachment ???)
                         forward to "recruitment@parkshark.com"
                         recruitment++
-                        delete mail (* in mailbox)
-                    ELSE IF contains "Promo" OR contains "advertising" (~)
-                        forward to "spam@parkshark.com"
-                        spam++
-                        delete mail (*)
-                    ELSE IF contains "sales" (~)
+                    IF contains "sales" (~)
                         forward to "sales@parkshark.com"
                         sales++
-                        delete mail (*)
+                    IF contains "Promo" OR contains "advertising" (~)
+                        IF NOT in spamReferenceList
+                            forward to "spam@parkshark.com"
+                            spam++
+                            add to spamReferenceList
+                        ELSE 
+                            duplicate++
                     ELSE 
                         // devide work among 2 people (can use a modulus and switch case for more people)
                         if reception is even   
                             forward to "reception@parkshark.com"
                             reception++
-                            delete mail (*)
                         else 
                             forward to "jobstudent@parkshark.com"
                             reception++
-                            delete mail (*)
+                    delete mail (* in info mailbox)
             else
                 liveSorting = false     // Stop program when there are no more new mails
                 // Execute some extra code before shut down
@@ -62,6 +67,9 @@ Given a growing list of mails (listOfMails):
         // Can print to csv file to save data 
         // This csv can be consumed by some other code and do more calc by adding collumns
         // For example (current - previous) for data on 1 loop
+    print # of mails including duplicates
+        total = recruitment + spam + sales + reception + duplicates
+        print: total, recruitment, spam + duplicates, sales, reception
 
 ## Multiple threads
 Things we could try to optimize:
