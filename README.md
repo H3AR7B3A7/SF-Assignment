@@ -19,23 +19,32 @@ Given a growing list of mails (listOfMails):
     WHILE liveSorting
         get listOfMails
         listOfMails -> stream
-            FOREACH mail of listOfMails
-                IF contains "CV" (~ title / body / attachment ???)
-                    forward to "recruitment@parkshark.com"
-                    recruitment++
-                    delete mail (* in mailbox)
-                ELSE IF contains "Promo" OR contains "advertising" (~)
-                    forward to "spam@parkshark.com"
-                    spam++
-                    delete mail (*)
-                ELSE IF contains "sales" (~)
-                    forward to "sales@parkshark.com"
-                    sales++
-                    delete mail (*)
-                ELSE 
-                    forward to "reception@parkshark.com"
-                    reception++
-                    delete mail (*)
+            if listOfMails != null
+                FOREACH mail of listOfMails
+                    IF contains "CV" (~ title / body / attachment ???)
+                        forward to "recruitment@parkshark.com"
+                        recruitment++
+                        delete mail (* in mailbox)
+                    ELSE IF contains "Promo" OR contains "advertising" (~)
+                        forward to "spam@parkshark.com"
+                        spam++
+                        delete mail (*)
+                    ELSE IF contains "sales" (~)
+                        forward to "sales@parkshark.com"
+                        sales++
+                        delete mail (*)
+                    ELSE 
+                        // devide work among 2 people (can use a modulus and switch case for more people)
+                        if reception is even   
+                            forward to "reception@parkshark.com"
+                            reception++
+                            delete mail (*)
+                        else 
+                            forward to "jobstudent@parkshark.com"
+                            reception++
+                            delete mail (*)
+            else
+                liveSorting = false     // Stop program when there are no more new mails
         print # of mails
         sleep (intervalInMin toMillis)
         
@@ -49,6 +58,7 @@ Given a growing list of mails (listOfMails):
     print # of mails
         total = recruitment + spam + sales + reception
         print: total, recruitment, spam, sales, reception
+        // can print to csv file to save data and do more calc by adding collumn
 
 ## Multiple threads
 Things we could try to optimize:
